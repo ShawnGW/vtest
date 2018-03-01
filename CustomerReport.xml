@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Operate_Guide>
+<!-- 
+配置方式：如果不同Device需要不同模板，则配置如下
+<Device name="device">
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+			<Text_pattern>TextReportModel8</Text_pattern>
+</Device>
+
+如果所有Device的模板都是同一类型，则只需要配置如下
+<default>
+	<Excel_pattern>ExceLReportModel2</Excel_pattern>
+	<Text_pattern>TextReportModel8</Text_pattern>
+</default>
+
+由于客户要求测报命名不同，同时需要配置测报名称
+配置元素：
+LOT:  实际lot
+ID： 仅需要FINID
+CPPROC：实际CPProcess
+TIME：测试时间
+DEVICE：实际Device
+WAFER： 实际WAFER
+VERSION: 部分需要version
+SL: slot
+如与以上不同，则当作字符输出(例如：.chiphomer)
+则直接输出
+
+配置方式如下：
+		<NamePattern>
+			模板&测报名称
+			<Pattrn>ExceLReportModel2:LOT.xlsx</Pattrn>
+			<Pattern>TextReportModel8:WAFER.txt</Pattern>
+		</NamePattern>
+-->
+	<CustomerCode id="AMC">
+		<Device name="M8baby">
+			<Excel_pattern>ExceLReportModel20</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXL_D">
+			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXL_B">
+			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXL_E">
+			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="TXL_TOP_B">
+			<Excel_pattern>ExceLReportModel35</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="M8baby_B">
+			<Excel_pattern>ExceLReportModel20</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="M8BABY_B">
+			<Excel_pattern>ExceLReportModel20</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXBB_C">
+			<Excel_pattern>ExceLReportModel32</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXLX_A">
+			<Excel_pattern>ExceLReportModel40</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXLX">
+			<Excel_pattern>ExceLReportModel40</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel19</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel18:LOT yield report.xlsx</Pattern>
+			<Pattern>ExceLReportModel28:LOT_PassBinSummary.xlsx</Pattern>
+			<Pattern>ExceLReportModel19:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel40:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel20:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel22:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel32:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel35:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel38:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel10:WAFER.txt</Pattern>
+			<Pattern>TextReportModel11:LOT-1-FINID</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ZSW">
+		<default>
+			<Excel_pattern>ExceLReportModel1s</Excel_pattern>
+			<Text_pattern>TextReportModel29</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel1s:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel29:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ANE">
+		<default>
+			<Excel_pattern>ExceLReportModel43</Excel_pattern>
+			<Text_pattern>TextReportModel35</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel43:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel35:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="BIS">
+		<default>
+			<Excel_pattern>ExceLReportModel1s</Excel_pattern>
+			<Text_pattern>TextReportModel37</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel1s:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel37:LOT_FINID_TIME.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="HTS">
+		<Device name="HS8786B1">
+			<Excel_pattern>ExceLReportModel36</Excel_pattern>
+			<Text_pattern>TextReportModel32</Text_pattern>
+		</Device>
+		<Device name="HS8787C">
+			<Excel_pattern>ExceLReportModel37</Excel_pattern>
+			<Text_pattern>TextReportModel32</Text_pattern>
+		</Device>
+		<Device name="HS8916CMS1A3.CP">
+			<Excel_pattern>ExceLReportModel37</Excel_pattern>
+			<Text_pattern>TextReportModel32</Text_pattern>
+		</Device>
+		<Device name="HS8916CMS1A1.CP">
+			<Excel_pattern>ExceLReportModel37</Excel_pattern>
+			<Text_pattern>TextReportModel32</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel36</Excel_pattern>
+			<Text_pattern>TextReportModel32</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel36:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel37:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel32:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="HGK">
+		<default>
+			<Excel_pattern>ExceLReportModel33</Excel_pattern>
+			<Excel_pattern>ExceLReportModel34</Excel_pattern>
+			<Text_pattern>TextReportModel30</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel33:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel34:LOT_BinSummary.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="HUT">
+		<Device name="GXLX_A">
+			<Excel_pattern>ExceLReportModel40</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="TXL_TOP_B">
+			<Excel_pattern>ExceLReportModel35</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXLX">
+			<Excel_pattern>ExceLReportModel22</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<NamePattern>
+			<Pattern>ExceLReportModel18:LOT yield report.xlsx</Pattern>	
+			<Pattern>ExceLReportModel28:LOT_PassBinSummary.xlsx</Pattern>
+			<Pattern>ExceLReportModel22:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel13:WAFER.txt</Pattern>
+			<Pattern>TextReportModel11:LOT-1-FINID</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="WXD">
+		<default>
+			<Excel_pattern>ExceLReportModel1s2</Excel_pattern>
+			<Text_pattern>TextReportModel36</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel1s2:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel36:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="FJT">
+		<Device name="GXLX_A">
+			<Excel_pattern>ExceLReportModel40</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXLX">
+			<Excel_pattern>ExceLReportModel22_FJT</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXBB_C">
+			<Excel_pattern>ExceLReportModel32_FJT</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel19_FJT</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel18:LOT yield report.xlsx</Pattern>
+			<Pattern>ExceLReportModel19_FJT:LOT.xlsx</Pattern>			
+			<Pattern>ExceLReportModel28:LOT_PassBinSummary.xlsx</Pattern>
+			<Pattern>ExceLReportModel22_FJT:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel32_FJT:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel10:WAFER.txt</Pattern>
+			<Pattern>TextReportModel13:WAFER.txt</Pattern>
+			<Pattern>TextReportModel11:LOT-1-FINID</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SL2">
+		<default>
+			<Excel_pattern>ExceLReportModel29</Excel_pattern>
+			<Text_pattern>TextReportModel21</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel29:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel21:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ABR">
+		<default>
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ATW">
+		<Device name="AW701">
+			<Excel_pattern>ExceLReportModel1s</Excel_pattern>
+			<Text_pattern>TextReportModel8</Text_pattern>
+		</Device>
+		<Device name="AW312E">
+			<Excel_pattern>ExceLReportModel1s</Excel_pattern>
+			<Text_pattern>TextReportModel8</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+			<Text_pattern>TextReportModel8</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel8:WAFER.tmb</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="AVW">
+		<default>
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+			<Text_pattern>TextReportModel8</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel8:WAFER.tmb</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="BFS">
+		<default>
+			<Excel_pattern>ExceLReportModel1s</Excel_pattern>
+			<Text_pattern>TextReportModel1s</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel1s:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel1s:WAFER.BPS.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="CHP">
+		<default>
+			<Excel_pattern>ExceLReportModel5</Excel_pattern>
+			<Text_pattern>TextReportModel3</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel5:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel3:WAFER.chiphomer.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ETS">
+		<default>
+			<Excel_pattern>ExceLReportModel3</Excel_pattern>
+			<Excel_pattern>ExceLReportModel4</Excel_pattern>
+			<Text_pattern>TextReportModel9</Text_pattern>
+			<Text_pattern>TextReportModel24</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel4:LOT_Summary.xlsx</Pattern>
+			<Pattern>TextReportModel9:WAFER.tmb</Pattern>
+			<Pattern>TextReportModel24:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="FMI">
+		<default>
+			<Excel_pattern>ExceLReportModel3</Excel_pattern>
+			<Excel_pattern>ExceLReportModel4</Excel_pattern>
+			<Text_pattern>TextReportModel14</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel4:LOT_Summary.xlsx</Pattern>
+			<Pattern>TextReportModel14:SLWAFER.tma</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="HYP">
+		<default>
+			<Excel_pattern>ExceLReportModel12</Excel_pattern>
+			<Text_pattern>TextReportModel4s</Text_pattern>
+			<Text_pattern>TextReportModel23</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel12:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel4s:LOTFINID_TIME.CPPROC</Pattern>
+			<Pattern>TextReportModel23:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="LAS">
+		<default>
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel1:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="NTO">
+		<default>
+			<Excel_pattern>ExceLReportModel16</Excel_pattern>
+			<Excel_pattern>ExceLReportModel17</Excel_pattern>
+			<Text_pattern>TextReportModel5</Text_pattern>
+			<Text_pattern>TextReportModel2</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel16:DEVICE_LOT_OTPCPPROC.xlsx</Pattern>
+			<Pattern>ExceLReportModel17:DEVICE_LOT_OTPCPPROC_QC.xlsx</Pattern>
+			<Pattern>TextReportModel5:LOTFINID_TIME.CPPROC</Pattern>
+			<Pattern>TextReportModel2:LOT-FINID.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="PRA">
+		<default>
+			<Excel_pattern>ExceLReportModel12s</Excel_pattern>
+			<Text_pattern>TextReportModel6</Text_pattern>
+			<Text_pattern>TextReportModel7</Text_pattern>
+			<Text_pattern>TextReportModel31</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel12s:LOT-CPPROC.xlsx</Pattern>
+			<Pattern>TextReportModel6:LOT-CPPROC-FINID.txt</Pattern>
+			<Pattern>TextReportModel31:LOT-FINID-EQC.txt</Pattern>
+			<Pattern>TextReportModel7:LOT-CPPROC-FINID.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="PWI">
+		<default>
+			<Excel_pattern>ExceLReportModel10</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel10:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SIN">
+		<default>
+			<Excel_pattern>ExceLReportModel7</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel7:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="GBR">
+		<default>
+			<Excel_pattern>ExceLReportModel39</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel39:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SMC">
+		<default>
+			<Excel_pattern>ExceLReportModel9</Excel_pattern>
+			<Excel_pattern>ExceLReportModel8</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel9:CP Testing Summary Report LOT 20TIME.xlsx</Pattern>
+			<Pattern>ExceLReportModel8:CP SMCyield report-LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SNU">
+		<Device name="A600">
+			<Excel_pattern>ExceLReportModel6SNU</Excel_pattern>
+			<Text_pattern>TextReportModel4SNU</Text_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel6SNU</Excel_pattern>
+			<Text_pattern>TextReportModel4SNU</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel6SNU:DEVICE-CPPROC-LOT.xlsx</Pattern>
+			<Pattern>TextReportModel13:WAFER.txt</Pattern>
+			<Pattern>TextReportModel4SNU:DEVICE-CPPROC-LOT-FINID.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SRT">
+		<default>
+			<Excel_pattern>ExceLReportModel41</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel41:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="PTH">
+		<Device name="AK1506E">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1506F">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1506D">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1506G">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1506B">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1506H">
+			<Excel_pattern>ExceLReportModel15</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1606B">
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1606E">
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1606D">
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1504E">
+			<Excel_pattern>ExceLReportModel13</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1504D">
+			<Excel_pattern>ExceLReportModel13</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1611">
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<Device name="AK1613B">
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+			<Text_pattern>TextReportModel1</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel14</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel15:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel14:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel13:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel1:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="SWT">
+		<default>
+			<Excel_pattern>ExceLReportModel6s</Excel_pattern>
+			<Text_pattern>TextReportModel4</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel6s:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel4:LOTFINID_20TIME00.CPPROC</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="EWT">
+		<default>
+			<Excel_pattern>ExceLReportModel6s</Excel_pattern>
+			<Text_pattern>TextReportModel4</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel6s:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel4:LOTFINID_20TIME00.CPPROC</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="THC">
+		<default>
+			<Excel_pattern>ExceLReportModel11</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel11:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="GFD">
+		<default>
+			<Excel_pattern>ExceLReportModel3</Excel_pattern>
+			<Text_pattern>TextReportModel26</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel26:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="GCK">
+		<default>
+			<Excel_pattern>ExceLReportModel3</Excel_pattern>
+			<Text_pattern>TextReportModel25</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel25:WAFER.tmb</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="WEL">
+		<default>
+			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="TDT">
+		<default>
+			<Excel_pattern>ExceLReportModel30</Excel_pattern>
+			<Text_pattern>TextReportModel27</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel30:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel27:WAFER.map</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="NSY">
+		<Device name="NSA3094E">
+			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
+			<Text_pattern>TextReportModel12NSY</Text_pattern>
+		</Device>
+		<Device name="NSC2516B">
+			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
+			<Text_pattern>TextReportModel12NSY</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel21</Excel_pattern>
+			<Text_pattern>TextReportModel12</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel21NSY:LOT_YieldReport.xlsx</Pattern>
+			<Pattern>TextReportModel12NSY:LOT_#FINID.txt</Pattern>
+			<Pattern>ExceLReportModel21:LOT_YieldReport.xlsx</Pattern>
+			<Pattern>TextReportModel12:LOT_#FINID.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="BID">
+		<Device name="P7516F">
+			<Excel_pattern>ExceLReportModel23</Excel_pattern>
+			<Text_pattern>TextReportModel15</Text_pattern>
+			<Text_pattern>TextReportModel18</Text_pattern>
+		</Device>
+		<Device name="P7516G">
+			<Excel_pattern>ExceLReportModel31</Excel_pattern>
+			<Text_pattern>TextReportModel15</Text_pattern>
+			<Text_pattern>TextReportModel18</Text_pattern>
+		</Device>
+		<NamePattern>
+			<Pattern>ExceLReportModel23:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel31:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel15:LOTFINID.MAP</Pattern>
+			<Pattern>TextReportModel18:LOT-FINID-1</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="FUA">
+		<Device name="LINBAOV1">
+			<Excel_pattern>ExceLReportModel25</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<Device name="LINBAOV2">
+			<Excel_pattern>ExceLReportModel25</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<Device name="LINBAOV3">
+			<Excel_pattern>ExceLReportModel25</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<Device name="PX3">
+			<Excel_pattern>ExceLReportModel26</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<Device name="PX3V2">
+			<Excel_pattern>ExceLReportModel26</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<Device name="PX3V3">
+			<Excel_pattern>ExceLReportModel26</Excel_pattern>
+			<Text_pattern>TextReportModel16</Text_pattern>
+		</Device>
+		<NamePattern>
+			<Pattern>ExceLReportModel25:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel26:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel16:WAFER.smic</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="MCX">
+		<default>
+			<Excel_pattern>ExceLReportModel3</Excel_pattern>
+			<Text_pattern>TextReportModel19</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel19:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="FQR">
+		<default>
+			<Excel_pattern>ExceLReportModel42</Excel_pattern>
+			<Text_pattern>TextReportModel34</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel42:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel34:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="MCM">
+		<default>
+			<Excel_pattern>ExceLReportModel27</Excel_pattern>
+			<Text_pattern>TextReportModel20</Text_pattern>
+			<Text_pattern>TextReportModel33</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportMode27:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel20:LOT-FINID_CPPROC.txt</Pattern>
+			<Pattern>TextReportModel33:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="VNP">
+		<default>			
+			<Text_pattern>TextReportModel22</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>TextReportModel22:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+</Operate_Guide>
