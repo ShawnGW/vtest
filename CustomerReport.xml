@@ -611,6 +611,10 @@ SL: slot
 			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
 			<Text_pattern>TextReportModel12NSY</Text_pattern>
 		</Device>
+		<Device name="NSA3094E">
+			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
+			<Text_pattern>TextReportModel12NSY</Text_pattern>
+		</Device>
 		<default>
 			<Excel_pattern>ExceLReportModel21</Excel_pattern>
 			<Text_pattern>TextReportModel12</Text_pattern>
