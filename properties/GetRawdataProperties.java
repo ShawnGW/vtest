@@ -6,18 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 public class GetRawdataProperties {
-	public static void main(String[] args) throws IOException {
-		GetRawdataProperties getRawdataProperties=new GetRawdataProperties();
-		//getRawdataProperties.getProperties();
-		HashMap<String, String> result=getRawdataProperties.getProperties();
-		Set<String> keyset=result.keySet();
-		for (String string : keyset) {
-			System.out.println(string+":"+result.get(string));
-		}
-	}
 	public  HashMap<String, String> getConfigs() throws IOException {
 		HashMap<String, String> properties=new HashMap<>();
 		InputStream inputStream=this.getClass().getResourceAsStream("Rawdata.properties");

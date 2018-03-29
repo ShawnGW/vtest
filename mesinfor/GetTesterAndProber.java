@@ -1,12 +1,13 @@
 package mesinfor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import mestools.GetTesterProberAndCardFromMes;
 import mestools.OutPutSpecialChar;
 
 public class GetTesterAndProber {
-	public HashMap<String, String> Get(String lot,String cp)
+	public HashMap<String, String> Get(String lot,String cp,boolean flag)
 	{
 		HashMap<String, String> resultMap=new HashMap<>();
 		resultMap.put("Tester ID", "NA");
@@ -33,7 +34,20 @@ public class GetTesterAndProber {
 					resultMap.put("Prober Card ID", proberCard);
 				}
 			}
-		}	
+		}
+		Collection<String> collection=resultMap.values();
+		boolean checkFlag=false;
+		for (String value : collection) {
+			if (!value.equals("NA")) {
+				checkFlag=true;
+				break;
+			}
+		}
+		if (!checkFlag&&flag) {
+			flag=false;
+			lot=lot.split("\\.")[0];
+			resultMap=Get(lot, cp,flag);
+		}
 		return resultMap;
 	}
 }

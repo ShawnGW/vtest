@@ -19,10 +19,23 @@ public class GetStreamFromMes {
 		urlConnection.setRequestProperty("HOST", MesProperties.SERVICE_HOST);
 		urlConnection.setReadTimeout(10000);
 		urlConnection.setConnectTimeout(10000);
-		urlConnection.connect();
+		initUrlConnecttion(urlConnection, 0);
 		inputStream=urlConnection.getInputStream();
 		InputStreamReader IsReader=new InputStreamReader(inputStream,"utf8");
 		BufferedReader bufferedReader=new BufferedReader(IsReader);	
 		return bufferedReader;
+	}
+	private static void initUrlConnecttion(HttpURLConnection urlConnection,int times)
+	{
+		try {
+			urlConnection.connect();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			times++;
+			if (times<6) {
+				initUrlConnecttion(urlConnection, times);
+			}
+		}
 	}
 }

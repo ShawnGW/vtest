@@ -3,7 +3,9 @@ package mesinfor;
 import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
+import mestools.GetLotConfigFromMes;
 import mestools.GetRandomChar;
 import mestools.MesInterface;
 import properties.GetStreamFromMes;
@@ -15,7 +17,32 @@ public class GetMesInformations {
 	public  static final String TYPE_BINDEFINE="BINDEFINE";
 	public  static final String TYPE_TESTERANDPROBER="TESTERANDPROBER";
 	public  static final String TYPE_INNERLOT="INNERLOT";
-	
+	public static void main(String[] args) {
+		GetMesInformations getMesInformations =new GetMesInformations();
+		getMesInformations.getSlotAndSequence("FA75-5476");
+	}
+	public HashMap<String, String> getSlotAndSequence(String customerLot)
+	{
+		HashMap<String, String> config=new HashMap<>();
+		config.put("readType", "OCR");
+		config.put("sequence", "1-25");
+		config.put("gpib", "0");
+		GetMesInformations getMesInformations=new GetMesInformations();
+		HashMap<String, String> resultMap=getMesInformations.getInfor(new GetLotConfigFromMes(customerLot), GetMesInformations.TYPE_CONFIG);
+		Set<String> resultSet=resultMap.keySet();
+		for (String properties : resultSet) {
+			if (properties.equals("[FlexibleItem_ProcessSpecAttributes:Wafer_Sequence]")) {
+				config.put("sequence",resultMap.get(properties).trim());
+			}
+			if (properties.equals("[FlexibleItem_ProcessSpecAttributes:WaferID_read]")) {
+				config.put("readType",resultMap.get(properties).trim());
+			}
+			if (properties.equals("[FlexibleItem_ProcessSpecAttributes:GPIB_Bin]")) {
+				config.put("gpib",resultMap.get(properties).trim());
+			}
+		}
+		return config;
+	}
 	public HashMap<String, String> getInfor(MesInterface mesInterface,String type)
 	{
 		try {			
