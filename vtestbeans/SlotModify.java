@@ -5,6 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlotModify {
+	public static void main(String[] args) {
+		HashMap<String, String> customerLotConfig=new HashMap<>();
+		customerLotConfig.put("readType", "SLOT");
+		customerLotConfig.put("sequence", "25-1");
+		System.out.println(modify(customerLotConfig, "7347863-1"));;
+	}
 	public static String modify(HashMap<String, String> customerLotConfig,String waferid)
 	{
 		String Type=customerLotConfig.get("readType");
@@ -22,7 +28,7 @@ public class SlotModify {
 			Matcher matcher1=pattern1.matcher(waferid);
 			Matcher matcher2=pattern2.matcher(waferid);
 			Matcher matcher3=pattern3.matcher(waferid);
-			Matcher matcher4=pattern4.matcher(waferid);
+			Matcher matcher4=pattern4.matcher(waferid);			
 			
 			String sequnce=customerLotConfig.get("sequence");
 			
@@ -30,7 +36,7 @@ public class SlotModify {
 			String value=null;
 			if (matcher1.find()) {
 				String[] tokens=waferid.split("-");
-				partLot=tokens[0]+tokens[1];
+				partLot=tokens[0]+tokens[1].substring(0, 4);
 				value=modifyValue(sequnce, tokens[2]);
 			}else if (matcher2.find()) {
 				String[] tokens=waferid.split("-");
@@ -43,6 +49,14 @@ public class SlotModify {
 			}else if(matcher4.find()){
 				String[] tokens=waferid.split("-");
 				partLot=tokens[0];
+				if (partLot.length()==7) {
+					String specialRegex="[0-9]{7}";
+					Pattern specialPattern=Pattern.compile(specialRegex);
+					Matcher specialMatcher=specialPattern.matcher(partLot);
+					if (specialMatcher.find()) {
+						partLot=partLot.substring(0, 6)+"0";
+					}
+				}
 				value=modifyValue(sequnce, tokens[1]);
 			}
 			waferid=partLot+"-"+value;
