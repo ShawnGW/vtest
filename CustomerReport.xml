@@ -34,6 +34,13 @@ SL: slot
 		</NamePattern>
 -->
 	<CustomerCode id="AMC">
+		<Device name="TXHD_B">
+			<Excel_pattern>ExceLReportModel44</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
 		<Device name="M8baby">
 			<Excel_pattern>ExceLReportModel20</Excel_pattern>
 			<Excel_pattern>ExceLReportModel18</Excel_pattern>
@@ -42,7 +49,7 @@ SL: slot
 			<Text_pattern>TextReportModel11</Text_pattern>
 		</Device>
 		<Device name="GXL_D">
-			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel46</Excel_pattern>
 			<Excel_pattern>ExceLReportModel18</Excel_pattern>
 			<Excel_pattern>ExceLReportModel28</Excel_pattern>
 			<Text_pattern>TextReportModel10</Text_pattern>
@@ -136,13 +143,36 @@ SL: slot
 		</NamePattern>
 	</CustomerCode>
 	<CustomerCode id="ANE">
-		<default>
+		<Device name="S11812">
 			<Excel_pattern>ExceLReportModel43</Excel_pattern>
 			<Text_pattern>TextReportModel35</Text_pattern>
-		</default>
+		</Device>
 		<NamePattern>
 			<Pattern>ExceLReportModel43:LOT.xlsx</Pattern>
 			<Pattern>TextReportModel35:WAFER.txt</Pattern>
+		</NamePattern>
+	</CustomerCode>
+	<CustomerCode id="ASH">
+		<Device name="GXL_D">
+			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel39</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<default>
+			<Excel_pattern>ExceLReportModel38</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</default>
+		<NamePattern>
+			<Pattern>ExceLReportModel18:LOT yield report.xlsx</Pattern>
+			<Pattern>ExceLReportModel28:LOT_PassBinSummary.xlsx</Pattern>
+			<Pattern>ExceLReportModel38:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel39:WAFER.txt</Pattern>
+			<Pattern>TextReportModel11:LOT-1-FINID</Pattern>
 		</NamePattern>
 	</CustomerCode>
 	<CustomerCode id="BIS">
@@ -196,6 +226,13 @@ SL: slot
 	<CustomerCode id="HUT">
 		<Device name="GXLX_A">
 			<Excel_pattern>ExceLReportModel40</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel10</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
+		<Device name="GXL_D">
+			<Excel_pattern>ExceLReportModel46</Excel_pattern>
 			<Excel_pattern>ExceLReportModel18</Excel_pattern>
 			<Excel_pattern>ExceLReportModel28</Excel_pattern>
 			<Text_pattern>TextReportModel10</Text_pattern>
@@ -255,6 +292,13 @@ SL: slot
 			<Text_pattern>TextReportModel13</Text_pattern>
 			<Text_pattern>TextReportModel11</Text_pattern>
 		</Device>
+		<Device name="GXL_D">
+			<Excel_pattern>ExceLReportModel46</Excel_pattern>
+			<Excel_pattern>ExceLReportModel18</Excel_pattern>
+			<Excel_pattern>ExceLReportModel28</Excel_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
+			<Text_pattern>TextReportModel11</Text_pattern>
+		</Device>
 		<default>
 			<Excel_pattern>ExceLReportModel18</Excel_pattern>
 			<Excel_pattern>ExceLReportModel19_FJT</Excel_pattern>
@@ -285,10 +329,10 @@ SL: slot
 	</CustomerCode>
 	<CustomerCode id="ABR">
 		<default>
-			<Excel_pattern>ExceLReportModel2</Excel_pattern>
+			<Excel_pattern>ExceLReportModel39</Excel_pattern>
 		</default>
 		<NamePattern>
-			<Pattern>ExceLReportModel2:LOT.xlsx</Pattern>
+			<Pattern>ExceLReportModel39:LOT.xlsx</Pattern>
 		</NamePattern>
 	</CustomerCode>
 	<CustomerCode id="ATW">
@@ -358,9 +402,11 @@ SL: slot
 			<Excel_pattern>ExceLReportModel3</Excel_pattern>
 			<Excel_pattern>ExceLReportModel4</Excel_pattern>
 			<Text_pattern>TextReportModel14</Text_pattern>
+			<Text_pattern>TextReportModel13</Text_pattern>
 		</default>
 		<NamePattern>
 			<Pattern>ExceLReportModel3:LOT.xlsx</Pattern>
+			<Pattern>TextReportModel13:WAFER.txt</Pattern>
 			<Pattern>ExceLReportModel4:LOT_Summary.xlsx</Pattern>
 			<Pattern>TextReportModel14:SLWAFER.tma</Pattern>
 		</NamePattern>
@@ -611,14 +657,6 @@ SL: slot
 			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
 			<Text_pattern>TextReportModel12NSY</Text_pattern>
 		</Device>
-		<Device name="NSA3094E">
-			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
-			<Text_pattern>TextReportModel12NSY</Text_pattern>
-		</Device>
-        <Device name="NSC2516B">
-			<Excel_pattern>ExceLReportModel21NSY</Excel_pattern>
-			<Text_pattern>TextReportModel12NSY</Text_pattern>
-		</Device>
 		<default>
 			<Excel_pattern>ExceLReportModel21</Excel_pattern>
 			<Text_pattern>TextReportModel12</Text_pattern>
@@ -712,6 +750,10 @@ SL: slot
 		</NamePattern>
 	</CustomerCode>
 	<CustomerCode id="VNP">
+		<Device name="VPB3467A">
+			<Excel_pattern>ExceLReportModel1VNP</Excel_pattern>
+			<Text_pattern>TextReportModel22VNP</Text_pattern>
+		</Device>
 		<default>			
 			<Text_pattern>TextReportModel22</Text_pattern>
 		</default>
