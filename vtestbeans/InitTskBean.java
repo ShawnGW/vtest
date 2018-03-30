@@ -23,13 +23,15 @@ public class InitTskBean implements Rawdata{
 	private HashMap<String, String> DieMap=new HashMap<>();
 	private HashMap<String, String> skipAndMarkDieMap=new HashMap<>();
 	private HashMap<Integer, Integer> Bin_summary_Map=new HashMap<>();
-	
+		
 	public InitTskBean(String innerlot,File mapping) throws IOException {
 		GetTesterAndProber getTesterAndProber=new GetTesterAndProber();
 		GetMesInformations getMesInformations=new GetMesInformations();
 		GetRawdataProperties getRawdataProperties=new GetRawdataProperties();
 		TskProberMappingParse tskProberMappingParse=new TskProberMappingParse();
+		getWaferIdYield getWaferIdYield=new getWaferIdYield();
 		
+		//get inner lot ; get tsk mapping information ;
 		HashMap<String, String> customerLotConfig=getMesInformations.getSlotAndSequence(innerlot);		
 		int gpibBin=Integer.valueOf(customerLotConfig.get("gpib"));		
 		HashMap<String, String> tskMappingResult=tskProberMappingParse.Get(mapping,gpibBin,Bin_summary_Map,DieMap,skipAndMarkDieMap);
@@ -37,6 +39,7 @@ public class InitTskBean implements Rawdata{
 		waferid=SlotModify.modify(customerLotConfig, waferid);
 		innerlot=GetInnerLot.get(waferid);	
 		
+		//init properties by mes config
 		HashMap<String, String> resultMap=getMesInformations.getInfor(new GetLotConfigFromMes(innerlot), GetMesInformations.TYPE_CONFIG);
 		HashMap<String, String> configMap=getRawdataProperties.getConfigs();
 		 properties=getRawdataProperties.getProperties();
@@ -51,14 +54,22 @@ public class InitTskBean implements Rawdata{
 				}
 			}
 		}
-	
+		
+		//modify some properties by CP
+		ModifyProperties.modify(properties);
+		
+		//init properties by mapping infor
 		Set<String> keyset=tskMappingResult.keySet();
 		for (String key : keyset) {
-			properties.put(key, tskMappingResult.get(key));
+			String value=tskMappingResult.get(key);
+			if (!value.equals("NA")) {
+				properties.put(key, value);	
+			}		
 		}
-		
+		//modify wafer id
 		properties.put("Wafer ID", waferid);
 		
+		// get tester,prober,probercard; init properties;
 		String cp=tskMappingResult.get("CP Process");
 		HashMap<String, String> testerAndProber=getTesterAndProber.Get(innerlot, cp,true);
 		Set<String> testersMap=testerAndProber.keySet();
@@ -69,11 +80,12 @@ public class InitTskBean implements Rawdata{
 			}
 		}
 		
+		//modify process yield;
 		String processYield=GetProcessYield.getYield(properties.get("Process Yield"), cp);
 		properties.put("Process Yield", processYield);
 		
-		String lot=properties.get("Lot ID");
-		getWaferIdYield getWaferIdYield=new getWaferIdYield();
+		//init each cp process
+		String lot=properties.get("Lot ID");		
 		HashMap<String, String> cpYieldMap=getWaferIdYield.get(lot, waferid);
 		Set<String> yieldMap=cpYieldMap.keySet();
 		StringBuffer SB=new StringBuffer();
@@ -86,6 +98,7 @@ public class InitTskBean implements Rawdata{
 		}
 		properties.put("CP Yields", cpYields);
 		
+		//init right id base sequnce and slot
 		if (properties.get("Wafer_Sequence").equals("25-1")) {
 			properties.put("RightID", String.valueOf(26-Integer.valueOf(properties.get("Slot"))));
 		}else {

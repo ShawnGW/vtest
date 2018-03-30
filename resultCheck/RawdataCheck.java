@@ -3,6 +3,7 @@ package resultCheck;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,9 +15,21 @@ public class RawdataCheck {
 	private ArrayList<String> markAndSkipDieMap=new ArrayList<>();
 	private ArrayList<String> testDiesArray=new ArrayList<>();
 	private HashMap<String, String> properties=new HashMap<>();
-
-	public boolean check(File rawdata,HashMap<String, Boolean> checkedProperties,HashMap<String, String> log)
+	
+	public static void main(String[] args) throws IOException {
+		RawdataCheck rawdataCheck=new RawdataCheck();
+		HashMap<String, String> log=new HashMap<>();	
+		System.out.println(rawdataCheck.check(new File("D:/BFSCSV/PHFXLDARFHDFADH.raw"), log));;
+		Set<String> logset=log.keySet();
+		for (String string : logset) {
+			System.out.println(string+" : "+log.get(string));
+		}
+	}
+	
+	public boolean check(File rawdata,HashMap<String, String> log) throws IOException
 	{
+		InitCheckItems checkItems=new InitCheckItems();
+		HashMap<String, String> checkedProperties=checkItems.getProperties();
 		boolean generateFlag=initInfors(rawdata,log);
 		if (!generateFlag) {
 			return false;
@@ -103,25 +116,99 @@ public class RawdataCheck {
 		}
 		return true;
 	}	
-	private boolean propertiesCheck(HashMap<String, String> properties,HashMap<String, Boolean> checkedProperties,HashMap<String, String> log)
+	private boolean propertiesCheck(HashMap<String, String> properties,HashMap<String, String> checkedProperties,HashMap<String, String> log)
 	{
 		log.put("Type properties", "properties check");
 		Set<String> checkSet=checkedProperties.keySet();
-		for (String checkItem : checkSet) {
-			if (properties.containsKey(checkItem)) {
-				if (!properties.get(checkItem).equals("NA")) {
-					checkedProperties.put(checkItem, true);
-				}
-				else {
-					log.put(checkItem, "miss propertie "+checkItem);
+		for (String checkItem : checkSet) {		
+			String propertiesValue=checkedProperties.get(checkItem);
+			if (propertiesValue.equals("NA")) {
+				if (checkItem.contains("@")) {
+					if (properties.get("Customer Code").equals(checkItem.split("@")[1])) {
+						checkItem=checkItem.split("@")[0];
+						if (properties.containsKey(checkItem)) {
+							String value=properties.get(checkItem);
+							if (!value.equals("NA")) {
+								checkedProperties.put(checkItem, value);
+							}
+							else {
+								log.put(checkItem, "miss propertie:"+checkItem);
+							}
+						}else {
+							log.put("Properties value", "miss propertie:"+checkItem);
+						}
+					}else {
+						checkedProperties.put(checkItem, "no need checking!");
+					}
+				}else {
+					if (properties.containsKey(checkItem)) {
+						String value=properties.get(checkItem);
+						if (!value.equals("NA")) {
+							checkedProperties.put(checkItem, value);
+						}
+						else {
+							log.put(checkItem, "miss propertie:"+checkItem);
+						}
+					}else {
+						log.put("Properties value", "miss propertie:"+checkItem);
+					}
 				}
 			}else {
-				log.put("Properties value", "miss propertie "+checkItem);
+				if (checkItem.contains("@")) {
+					if (properties.get("Customer Code").equals(checkItem.split("@")[1]))
+					{
+						if (propertiesValue.contains("&")) {
+							Integer sum=Integer.valueOf(properties.get(checkItem));
+							String[] parts=propertiesValue.split("&");
+							Integer total=0;
+							for (String part : parts) {
+								Integer value=Integer.valueOf(properties.get(part));
+								total+=value;
+							}
+							int diff=total-sum;
+							if (diff==0) {
+								checkedProperties.put(checkItem, String.valueOf(total));
+							}else {
+								log.put("Properties value", checkItem+"  check fail!");
+							}
+						}else {
+							if (properties.get(checkItem).equals(properties.get(propertiesValue))) {
+								checkedProperties.put(checkItem, properties.get(propertiesValue));
+							}else {
+								log.put("Properties value", checkItem+" is not equals "+propertiesValue);
+							}
+						}
+					}else {
+						checkedProperties.put(checkItem, "no need checking!");
+					}
+				}else {
+					if (propertiesValue.contains("&")) {
+						Integer sum=Integer.valueOf(properties.get(checkItem));
+						String[] parts=propertiesValue.split("&");
+						Integer total=0;
+						for (String part : parts) {
+							Integer value=Integer.valueOf(properties.get(part));
+							total+=value;
+						}
+						int diff=total-sum;
+						if (diff==0) {
+							checkedProperties.put(checkItem, String.valueOf(total));
+						}else {
+							log.put("Properties value", checkItem+"  check fail!");
+						}
+					}else {
+						if (properties.get(checkItem).equals(properties.get(propertiesValue))) {
+							checkedProperties.put(checkItem, properties.get(propertiesValue));
+						}else {
+							log.put("Properties value", checkItem+" is not equals "+propertiesValue);
+						}
+					}
+				}			
 			}
 		}
-		Collection<Boolean> collection=checkedProperties.values();			
-		for (Boolean flag : collection) {
-			if (!flag) {			
+		Collection<String> collection=checkedProperties.values();			
+		for (String flag : collection) {
+			if (flag.equals("NA")) {	
 				return false;
 			}
 		}	

@@ -3,6 +3,7 @@ package vtestbeans;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 
 import rawdata.GenerateRawdata;
 import rawdata.Rawdata;
@@ -15,11 +16,14 @@ public class test {
 		Rawdata rawdata=new InitTskBean("FA75-5476", file2);
 		GenerateRawdata generateRawdata=new GenerateRawdata(rawdata, file);
 		File file3=generateRawdata.generate();
+		file3=new File("D:/BFSCSV/PHFXLDARFHDFADH.raw");
 		RawdataCheck rawdataCheck=new RawdataCheck();
-		HashMap<String, String> log=new HashMap<>();
-		HashMap<String, Boolean> checkedProperties=new HashMap<>();
-		checkedProperties.put("Inner Lot", false);
-		System.out.println(rawdataCheck.check(file3, checkedProperties, log));;
+		HashMap<String, String> log=new HashMap<>();	
+		System.out.println(rawdataCheck.check(file3, log));
+		Set<String> logset=log.keySet();
+		for (String string : logset) {
+			System.out.println(string+" : "+log.get(string));
+		}
 		file3.renameTo(new File("D:/BFSCSV/PHFXLDARFHDFADH.raw"));
 		System.out.println(file3);              
 	}

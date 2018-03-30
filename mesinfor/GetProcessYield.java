@@ -14,6 +14,9 @@ public class GetProcessYield {
 				yield=content.substring(tokens.get(9), tokens.get(10));
 			}
 		}
+		if (yield.trim().equals("")) {
+			yield="NA";
+		}
 		return yield;
 	}
 }
