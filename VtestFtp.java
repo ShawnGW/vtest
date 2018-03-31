@@ -1,8 +1,10 @@
 package com.vtest.it.FTPTrans;
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -22,27 +25,32 @@ import com.vtest.it.tools.GetLotStatus;
 import com.vtest.it.tools.ParseXml;
 
 /**
- * this program use to FTP transfer(Vtest_semic.ltd) 
+ * this program is used to FTP transfer(Vtest_semic.ltd) 
  * @author shawn.sun
  * @category IT
  * @version 2.0
  * @since 2018.3.12
  */
 
-public class VtestFtp {
-	private final File dataSource=new File("/FtpConfig");
+public class VtestFtp extends Thread{
+	private final File dataSource=new File("/home/shawn/Public/FtpConfig");
 	private final File ftpTempDirectory=new File("/home/ftpTemp");
 	private final File ReportDirectory=new File("/home/UploadReport/TestReportRelease/");
 	private final File LogFile=new File("/home/shawn/Log");
 	private final String proberPath="/prod/prober/TSK/UF200/mapdown/";
 	private final String dataSourcePath="/TesterData/";
 	private final String dataSourceDealPath="/home/UploadReport/DatalogRelease/";
-	
-	public void transfer()
+	private final File SPECIALLOT=new File("/home/ManMap/SpecialLot");
+	public static void main(String[] args) {
+		VtestFtp vtestFtp=new VtestFtp();
+		vtestFtp.start();
+	}
+	public void run()
 	{
 		if (!checkFile()) {
 			return;
 		}
+		ArrayList<String> specialLots=initSpecialLot();
 		PrintWriter printWriter=getPrintWriter();
 		HashMap<String, ArrayList<File>> xmlMap=getXmls();
 		Set<String> customerCodeSet=xmlMap.keySet();
@@ -57,8 +65,11 @@ public class VtestFtp {
 							fileDeleteFlag=true;
 						}
 						File xml=xmlArray.get(i);
+						printWriter.print("*************************************************************\r\n");
+						printWriter.print("*"+String.format("%28s", customerCode)+String.format("%31s", " ")+"*\r\n");
+						printWriter.print("*************************************************************\r\n");
+						
 						File[] Report_Devices=new File(ReportDirectory.getPath()+"/"+customerCode).listFiles();
-						FTPClient client=new FTPClient();
 						HashMap<String, Object> result=null;
 						ParseXml parseXml=new ParseXml();
 						result=	parseXml.Parse(xml);
@@ -73,6 +84,10 @@ public class VtestFtp {
 												
 						@SuppressWarnings("unchecked")
 						HashMap<String, String> FtpInfor=(HashMap<String, String>) result.get("FtpInfor");
+						@SuppressWarnings("unchecked")
+						HashMap<String, HashMap<String, String>> modifyMap=(HashMap<String, HashMap<String, String>>) result.get("ModifyMapper");
+						modifyMap=initModify(modifyMap);
+						
 						String host=FtpInfor.get("IP");
 						String port=FtpInfor.get("port");
 						String username=FtpInfor.get("username");
@@ -89,20 +104,29 @@ public class VtestFtp {
 								{
 									String lotName=Lot.getName();
 									boolean releaseFlag=false;
-									releaseFlag=GetLotStatus.GetStatusFinal(lotName);
-									if (releaseFlag)
+									try {
+										releaseFlag=GetLotStatus.GetStatusFinal(lotName);
+									} catch (Exception e) {
+										// TODO: handle exception
+									}
+									String releaseFlag2=customerCode+":"+deviceName+":"+lotName;
+									if (releaseFlag||specialLots.contains(releaseFlag2))
 									{
 										System.out.println(deviceName+":"+lotName+":release");
 										if (Lot.isDirectory()&&Lot.listFiles().length>0)
 										{
+											FTPClient client=new FTPClient();
+											initFtp(client, host, port, username, password, moudle,0);
+											initTempFtpDirectory(printWriter);
+											LinkedHashMap<String, File> uploadMap=new LinkedHashMap<>();
 											File[] CPS=Lot.listFiles();
-											ArrayList<File> Final_CPProcess=getCps(CPProcess, CPS);
+											ArrayList<File> Final_CPProcess=getCps(CPProcess, CPS,printWriter);
 											for (File CPFile : Final_CPProcess)
 											{
 												File CP=CPFile;
 												String CPName=CPFile.getName();
 												if (CP.isDirectory()&&CP.listFiles().length>0)
-												{
+												{													
 													System.out.println(deviceName+":"+lotName+":"+CPName+"  uploading...");
 													printWriter.print(deviceName+":"+lotName+":"+CPName+"   "+new Date()+"\r\n");
 													try {
@@ -111,36 +135,33 @@ public class VtestFtp {
 														HashMap<String, File[]> FileMapper=initData(cusReport, printWriter, CP, customerCode, deviceName, lotName, CPName, flagCheck);
 														for (String FileName : NameSet)
 														{
-															try {
-																initTempFtpDirectory(printWriter);
-																ArrayList<Object> config=FtpFilesMapper.get(FileName);
-																String ftpPath    =(String) config.get(2);
+															try {																
+																ArrayList<Object> config=FtpFilesMapper.get(FileName);						
 																boolean zipFlag      =(boolean)config.get(0);																															
 																String RPFlag     =(String) config.get(3);
 																String[] contents =((String)config.get(1)).split("&");
 																String classifyType=(String) config.get(4);
-																String ftpFileName=FileName.substring(0, FileName.lastIndexOf("-"));
-																																
-																HashMap<String, ArrayList<File>> finalTransferDatalogs=uploadFileDeal(contents,RPFlag,FileMapper);
-																Set<String> RPProcess=finalTransferDatalogs.keySet();
+																String ftpFileName=FileName.substring(0, FileName.lastIndexOf("-"));																
+																HashMap<String, ArrayList<File>> finalTransferDatalogs=uploadFileDeal(contents,RPFlag,FileMapper,cusReport);
+																Set<String> RPProcess=finalTransferDatalogs.keySet();																																
 																for (String process : RPProcess) {
+																	String ftpPath    =(String) config.get(2);
 																	ArrayList<File> processDatalogs=finalTransferDatalogs.get(process);
-																	ArrayList<File> uploadFiles=getUploadFiles( classifyType,zipFlag,lotName,zipType,processDatalogs);
+																	ArrayList<File> uploadFiles=getUploadFiles(classifyType,zipFlag,lotName,zipType,processDatalogs);
 																	TypeWrapper.put("{RPn}", process);
 																	Set<String> typeSet=TypeWrapper.keySet();
 																	for (String typeMap : typeSet) {
 																		ftpFileName=ftpFileName.replace(typeMap, TypeWrapper.get(typeMap));
-																		ftpPath=ftpPath.replace(typeMap, TypeWrapper.get(typeMap));
-																	}	
-																	client.connect(host, Integer.valueOf(port));
-																	client.login(username, password);
-																	if (moudle.equals("Negative")) {
-																		client.enterLocalPassiveMode();
-																	}
-																	client.setConnectTimeout(1000000);
-																	client.setBufferSize(1024*1024);
-																	client.setControlEncoding("GBK");
-																	client.setFileType(FTPClient.BINARY_FILE_TYPE);
+																		String finalChar=TypeWrapper.get(typeMap);
+																		if (modifyMap.containsKey(typeMap)) {
+																			HashMap<String, String> nameMap=modifyMap.get(typeMap);
+																			if (nameMap.containsKey(finalChar)) {
+																				finalChar=nameMap.get(finalChar);
+																			}
+																		}										
+																		ftpPath=ftpPath.replace(typeMap, finalChar);																
+																	}		
+																	
 																	initFtpPath(ftpPath, client,uploadFiles);																	
 																	client.changeWorkingDirectory("/"+ftpPath);
 																	
@@ -153,55 +174,139 @@ public class VtestFtp {
 																			client.changeWorkingDirectory("/"+ftpPath+"/"+DirectoryName);
 																			File[] files=localfile.listFiles();
 																			for (int k = 0; k < files.length; k++) {
-																				FileInputStream fins=new FileInputStream(files[k]);
-																				client.storeFile(files[k].getName(), fins);
-																				fins.close();
-																				files[k].delete();
+																				//FileInputStream fins=new FileInputStream(files[k]);
+																				uploadMap.put("/"+ftpPath+"/"+DirectoryName+"&"+GetRandomChar.getRandomChar(10), files[k]);
+																				//client.storeFile(files[k].getName(), fins);																																									
+																				//fins.close();
 																			}							
 																		}else {
-																			FileInputStream fins=new FileInputStream(localfile);																													
-																			client.storeFile(localfile.getName(), fins);	
-																			printWriter.print("\t"+localfile.getName()+"\r\n");
-																			fins.close();
+																			uploadMap.put("/"+ftpPath+"&"+GetRandomChar.getRandomChar(10), localfile);
+																			//FileInputStream fins=new FileInputStream(localfile);
+																			//client.storeFile(localfile.getName(), fins);
+																			if (classifyType.equals("CLASSIFY_LOT")) {
+																				client.rename(localfile.getName(), ftpFileName+"."+zipType);
+																				printWriter.print("\t"+ftpFileName+"."+zipType+"  size:"+localfile.length()/1024+"KB "+Double.valueOf((localfile.length()/1024))/1024+"MB "+"\r\n");
+																			}else {
+																				printWriter.print("\t"+localfile.getName()+"  size:"+localfile.length()/1024+"KB "+Double.valueOf((localfile.length()/1024))/1024+"MB "+"\r\n");
+																			}
+																			//fins.close();
 																		}
-																	}
-																	client.disconnect();
-																	initTempFtpDirectory(printWriter);
+																	}																																			
 																}
+																
 															} catch (Exception e) {
 																// TODO: handle exception
+																e.printStackTrace();
 																e.printStackTrace(printWriter);	
 															}
-														}
+														}														
 													} catch (Exception e) {
 														// TODO: handle exception
+														e.printStackTrace();
 														e.printStackTrace(printWriter);
-													}
-													if (fileDeleteFlag) {
-														try {
-															DeleteFile.Delete(CPFile);
-														} catch (Exception e) {
-															// TODO: handle exception
-															e.printStackTrace(printWriter);
-														}
-													}
+													}											
 												}
 											}
+											Set<String> pathSet=uploadMap.keySet();
+											for (String path : pathSet) {
+												String actualPath=path.split("&")[0];
+												File file=uploadMap.get(path);
+												String remoteName=file.getName();
+												client.changeWorkingDirectory(actualPath);
+												FileInputStream fins=new FileInputStream(file);
+												System.out.println(remoteName);
+												try {
+													client.enterLocalPassiveMode();
+													client.storeFile(remoteName, fins);
+												} catch (Exception e) {
+													// TODO: handle exception
+													e.printStackTrace();
+													initFtp(client, host, port, username, password, moudle, 0);
+													client.changeWorkingDirectory(actualPath);
+													client.storeFile(remoteName, fins);
+												}
+												System.out.println(remoteName+" upload finish!");
+												fins.close();
+											}
+											initTempFtpDirectory(printWriter);
+											if (fileDeleteFlag) {
+												try {
+													DeleteFile.Delete(Lot);
+												} catch (Exception e) {
+													// TODO: handle exception
+													e.printStackTrace();
+													e.printStackTrace(printWriter);
+												}
+											}
+											client.disconnect();
 										}
-									}
+									}									
 								}
+							}else {
+								DeleteFile.Delete(Device);
 							}
 						}
+						
 					} catch (Exception e) {
-						// TODO: handle exception
+						// TODO: handle excepti;on
+						e.printStackTrace();
 						e.printStackTrace(printWriter);
 					}
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+				e.printStackTrace();
 				e.printStackTrace(printWriter);
 			}
 		}
+		printWriter.flush();
+		printWriter.close();
+	}
+	private ArrayList<String> initSpecialLot()
+	{
+		ArrayList<String> arrayList=new ArrayList<>();
+		File[] files=SPECIALLOT.listFiles();
+		try {
+			for (int i = 0; i < files.length; i++) {
+				FileReader reader=new FileReader(files[i]);
+				BufferedReader bufferedReader=new BufferedReader(reader);
+				String content;
+				while((content=bufferedReader.readLine())!=null)
+				{
+					arrayList.add(content);
+				}
+				bufferedReader.close();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return arrayList;
+	}
+	private void initFtp(FTPClient client,String host,String port,String username,String password,String moudle,int times)
+	{
+			try {
+				Thread.sleep(3000);
+				client.connect(host, Integer.valueOf(port));
+				client.login(username, password);	
+//				client.enterLocalActiveMode();
+				client.setDefaultTimeout(100000);
+//				if (moudle.equals("Negative")) {
+//					client.enterLocalPassiveMode();
+//				}
+				client.setConnectTimeout(100000);
+				client.setBufferSize(1024*1024);
+				client.setControlEncoding("GBK");
+				client.setFileType(FTPClient.BINARY_FILE_TYPE);
+				client.enterLocalPassiveMode();
+			} catch (Exception e) {
+				// TODO: handle exception	
+				e.printStackTrace();
+				times++;
+				if (times<10) {
+					initFtp(client, host, port, username, password, moudle,times);
+				}
+			}
 	}
 	private boolean checkFile()
 	{
@@ -219,22 +324,22 @@ public class VtestFtp {
 		}
 		return true;
 	}
-	private HashMap<String, ArrayList<File>> uploadFileDeal(String[] contents,String RPFlag,HashMap<String, File[]> FileMapper)
+	private HashMap<String, ArrayList<File>> uploadFileDeal(String[] contents,String RPFlag,HashMap<String, File[]> FileMapper,File cusReport)
 	{
 		ArrayList<File> datalogs=new ArrayList<>();
 		HashMap<String, ArrayList<File>> finalTransferDatalogs=new HashMap<>();
 		for (String FileType : contents)
 		{
-			File[] files=FileMapper.get(FileType);
-			for (int j = 0; j < files.length; j++) {
-				datalogs.add(files[j]);
-			}
+				File[] files=FileMapper.get(FileType);
+				for (int j = 0; j < files.length; j++) {
+					datalogs.add(files[j]);
+				}
 		}
 			
 		if (RPFlag.toUpperCase().equals("TRUE")) {
 			for (File file : datalogs) {
 				String fileName=file.getName();
-				if (fileName.contains("RP0")) {
+				if ((fileName.contains("RP0")&&fileName.startsWith("VTEST"))||(!fileName.contains("RT")&&!fileName.startsWith("VTEST"))) {
 					if (finalTransferDatalogs.containsKey("CP")) {
 						ArrayList<File> CPArrayList=finalTransferDatalogs.get("CP");
 						CPArrayList.add(file);
@@ -246,14 +351,14 @@ public class VtestFtp {
 					}
 				}else
 				{
-					if (finalTransferDatalogs.containsKey("RP")) {
-						ArrayList<File> RPArrayList=finalTransferDatalogs.get("RP");
+					if (finalTransferDatalogs.containsKey("RT")) {
+						ArrayList<File> RPArrayList=finalTransferDatalogs.get("RT");
 						RPArrayList.add(file);
-						finalTransferDatalogs.put("RP",RPArrayList);
+						finalTransferDatalogs.put("RT",RPArrayList);
 					}else {
 						ArrayList<File> RPArrayList=new ArrayList<>();
 						RPArrayList.add(file);
-						finalTransferDatalogs.put("RP",RPArrayList);
+						finalTransferDatalogs.put("RT",RPArrayList);
 					}
 				}
 			}
@@ -266,6 +371,22 @@ public class VtestFtp {
 			finalTransferDatalogs.put("CP",CPArrayList);
 		}
 		return finalTransferDatalogs;
+	}
+	private HashMap<String, HashMap<String, String>> initModify(HashMap<String, HashMap<String, String>> modifyMap)
+	{
+		HashMap<String, String> mapper=new HashMap<>();
+		mapper.put("Device", "{Cus_Device}");
+		mapper.put("Lot", "{Lot_ID}");
+		mapper.put("CustomerCode", "{Cus_Code}");
+		
+		Set<String> keyWordSet=modifyMap.keySet();
+		for (String keyWord : keyWordSet) {
+			if (mapper.containsKey(keyWord)) {
+				modifyMap.put(mapper.get(keyWord), modifyMap.get(keyWord));
+				modifyMap.remove(keyWord);
+			}
+		}
+		return modifyMap;
 	}
 	private void initFtpPath(String ftpPath,FTPClient client,ArrayList<File> uploadFiles) throws IOException
 	{
@@ -285,21 +406,21 @@ public class VtestFtp {
 				client.makeDirectory(TempPathBuilder.toString());									
 			}
 		}
-		try {
-			String[] ServerFiles=client.listNames("/"+ftpPath);
-			if (ServerFiles.length>0) {
-				for (String ServerFileName : ServerFiles) {
-					for (File file : uploadFiles) {
-						if (file.isFile()&&file.getName().equals(ServerFileName)) {
-							client.deleteFile("/"+ftpPath+"/"+ServerFileName);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
+//		try {
+//			String[] ServerFiles=client.listNames("/"+ftpPath);
+//			if (ServerFiles.length>0) {
+//				for (String ServerFileName : ServerFiles) {
+//					for (File file : uploadFiles) {
+//						if (file.isFile()&&file.getName().equals(ServerFileName)) {
+//							client.deleteFile("/"+ftpPath+"/"+ServerFileName);
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
 	}
 	private void initTempFtpDirectory(PrintWriter printWriter)
 	{
@@ -328,7 +449,8 @@ public class VtestFtp {
 		File[] Chroma_Datalog=null;
 		File[] Chroma_Summary=null;
 		File[] Chroma_wmp=null;
-		
+		File[] T862_Datalog=null;
+		File[] T862_Summary=null;
 		
 		File[] Reports=CP.listFiles();
 		for (File Report : Reports) {
@@ -345,27 +467,19 @@ public class VtestFtp {
 				}
 			}
 		}
-				
+		File[] customerReport={CusReport};
+		
 		if (new File(CP.getPath()+"/Inkless_Mapping").exists())
 		{
 		inklessMaping=new File(CP.getPath()+"/Inkless_Mapping").listFiles();
-			if (inklessMaping.length==0) {
-				new File(CP.getPath()+"/Inkless_Mapping").delete();
-			}
 		}								
 		if (new File(CP.getPath()+"/Fab_Mapping").exists())
 		{
 			Fab_Mapping=new File(CP.getPath()+"/Fab_Mapping").listFiles();
-			if (Fab_Mapping.length==0) {
-				new File(CP.getPath()+"/Fab_Mapping").delete();
-			}
 		}												
 		if (new File(CP.getPath()+"/Fab_Rawdata").exists())
 		{
 			Fab_Rawdata=new File(CP.getPath()+"/Fab_Rawdata").listFiles();
-			if (Fab_Rawdata.length==0) {
-				new File(CP.getPath()+"/Fab_Rawdata").delete();
-			}
 		}
 		
 		ProberMapping=new File(proberPath+lotName).listFiles();
@@ -373,34 +487,44 @@ public class VtestFtp {
 		File[] M700Datas=new File("/TesterData/"+customerCode+"/"+deviceName+"/"+lotName+"/"+CPName).listFiles();												
 		ArrayList<File> M700_Datalog_temp_Array=new ArrayList<>();
 		ArrayList<File> M700_Summary_temp_Array=new ArrayList<>();
+		ArrayList<File> T862_Datalog_temp_Array=new ArrayList<>();
+		ArrayList<File> T862_Summary_temp_Array=new ArrayList<>();
 		if (flagCheck.equals("false")) {
 			try {
 				for (File Data : M700Datas) {
-					if (Data.isFile()&&Data.getName().contains("Summary")) {
+					if (Data.isFile()&&Data.getName().contains("TTT")) {
+						T862_Datalog_temp_Array.add(Data);
+					}else if(Data.isFile()&&Data.getName().endsWith(".lsr")){
+						T862_Summary_temp_Array.add(Data);
+					}else if (Data.isFile()&&Data.getName().contains("Summary")) {
 							M700_Summary_temp_Array.add(Data);
-						}
-					if (Data.isFile()&&Data.getName().contains("datalog")) {
+					}else if (Data.isFile()&&Data.getName().contains("datalog")) {
 							M700_Datalog_temp_Array.add(Data);
-						}
+					}
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace(printWriter);
+				printWriter.print("Datalog»± ß\r\n");
 			}
 		}else {
 			for (File Data : M700Datas) {
-				if (Data.isFile()&&Data.getName().contains("Summary")) {
+				if (Data.isFile()&&Data.getName().contains("TTT")) {
+					T862_Datalog_temp_Array.add(Data);
+				}else if(Data.isFile()&&Data.getName().endsWith(".lsr")){
+					T862_Summary_temp_Array.add(Data);
+				}else if (Data.isFile()&&Data.getName().contains("Summary")) {
 						M700_Summary_temp_Array.add(Data);
-					}
-				if (Data.isFile()&&Data.getName().contains("datalog")) {
+				}else if (Data.isFile()&&Data.getName().contains("datalog")) {
 						M700_Datalog_temp_Array.add(Data);
-					}
+				}
 			}
 		}
 		
 		M7000_Datalog=M700_Datalog_temp_Array.toArray(new File[M700_Datalog_temp_Array.size()]);
 		M7000_Summary=M700_Summary_temp_Array.toArray(new File[M700_Summary_temp_Array.size()]);
-		
+		T862_Datalog=T862_Datalog_temp_Array.toArray(new File[T862_Datalog_temp_Array.size()]);
+		T862_Summary=T862_Summary_temp_Array.toArray(new File[T862_Summary_temp_Array.size()]);
 		
 		File DataSource=new File(dataSourcePath+customerCode+"/"+deviceName+"/"+lotName+"/"+CPName);
 		File DataSource2=new File(dataSourceDealPath+customerCode+"/"+deviceName+"/"+lotName+"/"+CPName);
@@ -437,6 +561,7 @@ public class VtestFtp {
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace(printWriter);
+				printWriter.print("Chroma Datalog»± ß\r\n");
 			}
 			
 		if (DataSource2.exists()) {
@@ -465,11 +590,13 @@ public class VtestFtp {
 		FileMapper.put("FAB_Rawdata", Fab_Rawdata);
 		FileMapper.put("M7000_Datalog", M7000_Datalog);
 		FileMapper.put("M7000_Summary", M7000_Summary);
+		FileMapper.put("T862_Datalog", T862_Datalog);
+		FileMapper.put("T862_Summary", T862_Summary);
 		FileMapper.put("STDF_Datalog", STDF_Datalog);
 		FileMapper.put("Chroma_Datalog", Chroma_Datalog);
 		FileMapper.put("Chroma_Summary", Chroma_Summary);
 		FileMapper.put("Chroma_wmp", Chroma_wmp);
-		
+		FileMapper.put("Cus_Report", customerReport);
 		return FileMapper;
 	}
 	private HashMap<String, String> initTyper(String customerCode,String deviceName,String lotName,String CPName )
@@ -563,7 +690,7 @@ public class VtestFtp {
 		}
 		return uploadFiles;
 	}
-	private ArrayList<File> getCps(ArrayList<String> CPProcess,File[] CPS)
+	private ArrayList<File> getCps(ArrayList<String> CPProcess,File[] CPS,PrintWriter printWriter)
 	{
 		ArrayList<File> Final_CPProcess=new ArrayList<>();
 		if (CPProcess.size()==0) {
@@ -575,7 +702,8 @@ public class VtestFtp {
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
-					e.printStackTrace();
+					e.printStackTrace(printWriter);
+					printWriter.print("CP¡˜≥Ã¥ÌŒÛ£¨”–“Ï≥£CPProcess\r\n");
 				}																					
 			}							
 			Final_CPProcess.add(CP);
