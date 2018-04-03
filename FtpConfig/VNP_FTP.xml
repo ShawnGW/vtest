@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+命名规则：
+	Ink file：Inkless_Mapping
+	Prober Mapping: Prober_Mapping
+	Fab Mapping:FAB_Mapping
+	Fab Rawdata:FAB_Rawdata
+	Excel Report：Cus_Report
+	M7000 Datalog：M7000_Datalog
+	M7000 Summary：M7000_Summary
+	T862 Datalog：T862_Datalog
+	T862 Summary：T862_Summary
+	STDF Datalog：STDF_Datalog
+	Chroma Datalog: Chroma_Datalog
+	Chroma Summary: Chroma_Summary
+	Chroma WaferMap: Chroma_wmp
+	Customer Code:{Cus_Code}
+	Customer Device Name:{Cus_Device}
+	Customer Lot ID:{Lot_ID}
+	Wafer ID:{Wafer_ID}
+	Wafer ID Number:{Wafer_Number}
+	CP Process:{CPn}
+	RP Process:{RPn}
+	Year:{yyyy}
+	Mouth:{MM}
+	Day:{dd}
+	Hour:{HH}
+	Minute:{mm}
+	Second:{ss}
+-->
+<FTP_Upload_Guide>
+  <FTP_Address_Infor>
+	<FTP_Address>FTP1.vanchiptech.com</FTP_Address>
+	<FTP_UserName>v-test</FTP_UserName>
+	<FTP_PassWard>Sq2CvJks</FTP_PassWard>
+	<FTP_Moudle>Negative</FTP_Moudle>
+	<FTP_Port>21</FTP_Port>
+  </FTP_Address_Infor>
+    <ZipType>zip</ZipType>
+  <File>
+	<ZIP>YES</ZIP>
+	<Name>{Lot_ID}</Name>
+	<Content>Inkless_Mapping</Content>
+	<Directory>{Cus_Device}/{yyyy}/{MM}/test report/mapping</Directory>
+  </File>
+   <File>
+	<ZIP>NO</ZIP>
+	<Name>{Lot_ID}.xlsx</Name>
+	<Content>Cus_Report</Content>
+	<Directory>{Cus_Device}/{yyyy}/{MM}/test report/lot summary</Directory>
+  </File>
+  <File>
+	<ZIP>YES</ZIP>
+	<Classify_Type>CLASSIFY_WAFER</Classify_Type>
+	<Name>{Wafer_ID}</Name>
+	<Content>Chroma_Datalog</Content>
+	<Content>Chroma_wmp</Content>
+	<Content>Chroma_Summary</Content>
+	<Content>STDF_Datalog</Content>
+	<Directory>{Cus_Device}/{yyyy}/{MM}/{Lot_ID}</Directory>
+  </File>
+</FTP_Upload_Guide>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+命名规则：
+	ink file：Inkless_Mapping
+	Excel report：Cus_Report
+	M7000 datalog：M7000_Datalog
+	M7000 summary：M7000_Summary
+	T862 Datalog:T862_Datalog
+	T862 Summary:T862_Summary
+	stdf datalog：STDF_Datalog
+	chroma datalog: Chroma_Datalog
+-->
+<FTP_Upload_Guide>
+  <FTP_Address_Infor>
+	<FTP_Address>180.166.186.58</FTP_Address>
+	<FTP_UserName>weice</FTP_UserName>
+	<FTP_PassWard>3FvzM9fr</FTP_PassWard>
+	<FTP_Moudle>Negative</FTP_Moudle>
+	<FTP_Port>21</FTP_Port>
+  </FTP_Address_Infor>
+  <ZipType>zip</ZipType>
+    <CP_Process>
+	<CP_No>CP1</CP_No>
+	<CP_No>CP2</CP_No>
+	<CP_No>CP3</CP_No>
+	<CP_No>CP4</CP_No>
+  </CP_Process>
+  <File>
+	<ZIP>YES</ZIP>
+	<Name>{Lot_ID}_mapping</Name>
+	<Content>Inkless_Mapping</Content>
+	<Classify_Type>CLASSIFY_LOT</Classify_Type>
+	<Directory>/Test datalog/{Cus_Device}/{Lot_ID}/{CPn}</Directory>
+  </File>
+   <File>
+	<ZIP>NO</ZIP>
+	<Name>{Lot_ID}.xlsx</Name>
+	<Content>Cus_Report</Content>
+	<Directory>/Test datalog/{Cus_Device}/{Lot_ID}/{CPn}</Directory>
+  </File>
+  <File>
+	<ZIP>YES</ZIP>
+	<Name>{Lot_ID}_datalog</Name>
+	<Classify_Type>CLASSIFY_LOT</Classify_Type>
+	<Content>M7000_Datalog</Content>
+	<Content>M7000_Summary</Content>
+	<Content>T862_Datalog</Content>
+	<Content>T862_Summary</Content>
+	<Directory>/Test datalog/{Cus_Device}/{Lot_ID}/{CPn}</Directory>
+  </File>
+</FTP_Upload_Guide>
