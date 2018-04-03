@@ -50,6 +50,12 @@ public class RawdataCheck {
 		if (!binSummaryFlag) {
 			return false;
 		}
+		Set<String> logItems=log.keySet();
+		for (String item : logItems) {
+			if (item.contains("value")) {
+				return false;
+			}
+		}
 		return true;
 	}
 	private boolean initInfors(File Rawdata,HashMap<String, String> log)
@@ -116,6 +122,7 @@ public class RawdataCheck {
 		}
 		return true;
 	}	
+	
 	private boolean propertiesCheck(HashMap<String, String> properties,HashMap<String, String> checkedProperties,HashMap<String, String> log)
 	{
 		log.put("Type properties", "properties check");
@@ -124,7 +131,12 @@ public class RawdataCheck {
 			String propertiesValue=checkedProperties.get(checkItem);
 			if (propertiesValue.equals("NA")) {
 				if (checkItem.contains("@")) {
-					if (properties.get("Customer Code").equals(checkItem.split("@")[1])) {
+					String[] customers=checkItem.split("@");
+					ArrayList<String> customerArray=new ArrayList<>();
+					for (int i = 1; i < customers.length; i++) {
+						customerArray.add(customers[i]);
+					}
+					if (customerArray.contains(properties.get("Customer Code"))) {
 						checkItem=checkItem.split("@")[0];
 						if (properties.containsKey(checkItem)) {
 							String value=properties.get(checkItem);
@@ -132,7 +144,7 @@ public class RawdataCheck {
 								checkedProperties.put(checkItem, value);
 							}
 							else {
-								log.put(checkItem, "miss propertie:"+checkItem);
+								log.put("Properties value", "miss propertie:"+checkItem);
 							}
 						}else {
 							log.put("Properties value", "miss propertie:"+checkItem);
@@ -155,7 +167,12 @@ public class RawdataCheck {
 				}
 			}else {
 				if (checkItem.contains("@")) {
-					if (properties.get("Customer Code").equals(checkItem.split("@")[1]))
+					String[] customers=checkItem.split("@");
+					ArrayList<String> customerArray=new ArrayList<>();
+					for (int i = 1; i < customers.length; i++) {
+						customerArray.add(customers[i]);
+					}
+					if (customerArray.contains(properties.get("Customer Code"))) 
 					{
 						if (propertiesValue.contains("&")) {
 							Integer sum=Integer.valueOf(properties.get(checkItem));
@@ -196,12 +213,17 @@ public class RawdataCheck {
 						}else {
 							log.put("Properties value", checkItem+"  check fail!");
 						}
-					}else {
-						if (properties.get(checkItem).equals(properties.get(propertiesValue))) {
-							checkedProperties.put(checkItem, properties.get(propertiesValue));
-						}else {
-							log.put("Properties value", checkItem+" is not equals "+propertiesValue);
-						}
+					}else {					
+							try {
+								if (properties.get(checkItem).equals(properties.get(propertiesValue))) {
+									checkedProperties.put(checkItem, properties.get(propertiesValue));
+								}else {
+									log.put("Properties value", checkItem+" is not equals "+propertiesValue);
+								}
+							} catch (Exception e) {
+								// TODO: handle exception
+								log.put("Properties value", checkItem+" is not equals "+propertiesValue);
+							}						
 					}
 				}			
 			}
@@ -211,7 +233,7 @@ public class RawdataCheck {
 			if (flag.equals("NA")) {	
 				return false;
 			}
-		}	
+		}
 		return true;
 	}
 	private boolean binSummaryCheck(HashMap<Integer, Integer> theroySummaryMap,HashMap<Integer, Integer> actualSummaryMap,HashMap<String, String> log)
@@ -223,6 +245,9 @@ public class RawdataCheck {
 		}
 		Set<Integer> actualSet=actualSummaryMap.keySet();
 		for (Integer bin : actualSet) {
+//			System.out.println("Bin: "+bin);
+//			System.out.println("Bin:"+bin+"  "+actualSummaryMap.get(bin));
+//			System.out.println("Bin:"+bin+"  "+theroySummaryMap.get(bin));
 			if (!theroySummaryMap.containsKey(bin)) {
 				log.put("Bin value", "actual contains bin:"+bin+" but Bin Summary not contains!");
 				return false;

@@ -31,7 +31,6 @@ public class GetStreamFromMes {
 			urlConnection.connect();
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
 			times++;
 			if (times<6) {
 				initUrlConnecttion(urlConnection, times);

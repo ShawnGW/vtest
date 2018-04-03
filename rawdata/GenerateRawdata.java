@@ -21,10 +21,14 @@ public class GenerateRawdata implements GenerateRawdataInf{
 	private Rawdata rawdata;
 	private PrintWriter printWriter;
 	private File completeFile;
-    public GenerateRawdata(Rawdata rawdata,File rawFile) throws IOException {
+	private final File tempRawdataDirectory=new File("/TempRawdata");
+    public GenerateRawdata(Rawdata rawdata) throws IOException {
 		// TODO Auto-generated constructor stub
+    	if (!tempRawdataDirectory.exists()) {
+			tempRawdataDirectory.mkdirs();
+		}
     	this.rawdata=rawdata;
-    	this.completeFile =new File(rawFile.getParent()+"/"+GetRandomChar.getRandomChar(15)+".raw");
+    	this.completeFile =new File("/TempRawdata/"+GetRandomChar.getRandomChar(15)+".raw");
     	this.printWriter =new PrintWriter(completeFile);
 	}
     public File generate()
@@ -42,7 +46,7 @@ public class GenerateRawdata implements GenerateRawdataInf{
 		// TODO Auto-generated method stub
 		Set<String> propertieSet=properties.keySet();
 		for (String proper : propertieSet) {
-			printWriter.print(proper+":");
+			printWriter.print(proper.startsWith("@")?proper.split("@")[1]+":":proper+":");
 			printWriter.print(properties.get(proper)+"\r\n");
 		}
 	}

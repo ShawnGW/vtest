@@ -5,12 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlotModify {
-	public static void main(String[] args) {
-		HashMap<String, String> customerLotConfig=new HashMap<>();
-		customerLotConfig.put("readType", "SLOT");
-		customerLotConfig.put("sequence", "25-1");
-		System.out.println(modify(customerLotConfig, "7347863-1"));;
-	}
 	public static String modify(HashMap<String, String> customerLotConfig,String waferid)
 	{
 		String Type=customerLotConfig.get("readType");

@@ -24,7 +24,7 @@ public class InitTskBean implements Rawdata{
 	private HashMap<String, String> skipAndMarkDieMap=new HashMap<>();
 	private HashMap<Integer, Integer> Bin_summary_Map=new HashMap<>();
 		
-	public InitTskBean(String innerlot,File mapping) throws IOException {
+	public InitTskBean(String customerLot,File mapping,HashMap<String, String> customerLotConfig,HashMap<String, String> basicsInfor) throws IOException {
 		GetTesterAndProber getTesterAndProber=new GetTesterAndProber();
 		GetMesInformations getMesInformations=new GetMesInformations();
 		GetRawdataProperties getRawdataProperties=new GetRawdataProperties();
@@ -32,31 +32,48 @@ public class InitTskBean implements Rawdata{
 		getWaferIdYield getWaferIdYield=new getWaferIdYield();
 		
 		//get inner lot ; get tsk mapping information ;
-		HashMap<String, String> customerLotConfig=getMesInformations.getSlotAndSequence(innerlot);		
+//		HashMap<String, String> customerLotConfig=getMesInformations.getSlotAndSequence(customerLot);
 		int gpibBin=Integer.valueOf(customerLotConfig.get("gpib"));		
 		HashMap<String, String> tskMappingResult=tskProberMappingParse.Get(mapping,gpibBin,Bin_summary_Map,DieMap,skipAndMarkDieMap);
 		String waferid=tskMappingResult.get("Wafer ID");
 		waferid=SlotModify.modify(customerLotConfig, waferid);
-		innerlot=GetInnerLot.get(waferid);	
+		String innerlot=GetInnerLot.get(waferid);	
 		
 		//init properties by mes config
+		String cp=tskMappingResult.get("CP Process");
 		HashMap<String, String> resultMap=getMesInformations.getInfor(new GetLotConfigFromMes(innerlot), GetMesInformations.TYPE_CONFIG);
 		HashMap<String, String> configMap=getRawdataProperties.getConfigs();
 		 properties=getRawdataProperties.getProperties();
 		Set<String> configSet=configMap.keySet();
 		for (String config : configSet) {
-			if (resultMap.containsKey(config)) {
-				properties.put(configMap.get(config), resultMap.get(config));
-			}else
-			{
+			if (config.endsWith("*")) {
+				config=config.substring(0, config.length()-1);
+				for (String propertie : configSet) {
+					if (propertie.contains(config)) {
+						if (resultMap.get(config).contains(cp+"T0")) {
+							String[] content=resultMap.get(config).split(":");
+							properties.put(configMap.get(config+"*"), content.length>1?content[1]:content[0]);
+						}
+					}
+				}
+				config=config+"*";
 				if (properties.get(configMap.get(config)).equals(config)) {
 					properties.put(configMap.get(config), "NA");
+				}
+			}else {
+				if (resultMap.containsKey(config)) {
+					properties.put(configMap.get(config), resultMap.get(config));
+				}else
+				{
+					if (properties.get(configMap.get(config)).equals(config)) {
+						properties.put(configMap.get(config), "NA");
+					}
 				}
 			}
 		}
 		
 		//modify some properties by CP
-		ModifyProperties.modify(properties);
+		ModifyProperties.modify(properties,cp);
 		
 		//init properties by mapping infor
 		Set<String> keyset=tskMappingResult.keySet();
@@ -70,7 +87,6 @@ public class InitTskBean implements Rawdata{
 		properties.put("Wafer ID", waferid);
 		
 		// get tester,prober,probercard; init properties;
-		String cp=tskMappingResult.get("CP Process");
 		HashMap<String, String> testerAndProber=getTesterAndProber.Get(innerlot, cp,true);
 		Set<String> testersMap=testerAndProber.keySet();
 		for (String key : testersMap) {
@@ -90,11 +106,11 @@ public class InitTskBean implements Rawdata{
 		Set<String> yieldMap=cpYieldMap.keySet();
 		StringBuffer SB=new StringBuffer();
 		for (String process : yieldMap) {
-			SB.append(process+"&"+cpYieldMap.get(process)+";");
+			SB.append(process+"&"+cpYieldMap.get(process)+"%;");
 		}
 		String cpYields=SB.toString();
 		if (cpYields.equals("")) {
-			cpYields="NA";
+			cpYields=properties.get("CP Process")+"&"+properties.get("Wafer Yield")+";";
 		}
 		properties.put("CP Yields", cpYields);
 		
@@ -104,6 +120,12 @@ public class InitTskBean implements Rawdata{
 		}else {
 			properties.put("RightID", properties.get("Slot"));
 		}
+		
+		basicsInfor.put("customerCode", properties.get("Customer Code"));
+		basicsInfor.put("device", properties.get("Device Name"));
+		basicsInfor.put("lot", properties.get("Lot ID"));
+		basicsInfor.put("waferId", properties.get("Wafer ID"));
+		basicsInfor.put("cp", properties.get("CP Process"));
 	}
 	@Override
 	public LinkedHashMap<String, String> getProperties() {
