@@ -19,7 +19,7 @@ public class GetMesInformations {
 	public  static final String TYPE_INNERLOT="INNERLOT";
 	public static void main(String[] args) {
 		GetMesInformations getMesInformations =new GetMesInformations();
-		getMesInformations.getSlotAndSequence("FA75-5476");
+		getMesInformations.getSlotAndSequence("GXV41044");
 	}
 	public HashMap<String, String> getSlotAndSequence(String customerLot)
 	{

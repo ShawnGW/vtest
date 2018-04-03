@@ -3,17 +3,23 @@ package generateMain;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 
 import mesinfor.GetMesInformations;
+import mesinfor.WaferIdBinSummaryWrite;
 import mestools.GetRandomChar;
 import rawdata.GenerateRawdata;
 import rawdata.Rawdata;
 import resultCheck.RawdataCheck;
 import tools.DeleteFile;
+import tools.GetShieldDevice;
 import vtestbeans.InitTskBean;
 
 public class TskProberMapping2HGenerateRawdata {
@@ -114,7 +120,7 @@ public class TskProberMapping2HGenerateRawdata {
 			}
 		}
 		DeleteFile.Delete(lot);
-		return tempMapup;
+		return tempMapupLot;
 	}
 	private  boolean dealMappings()
 	{
@@ -133,11 +139,16 @@ public class TskProberMapping2HGenerateRawdata {
 			if (times<4) {
 				resultMap=new HashMap<>();
 				Rawdata rawdata=new InitTskBean(customerLot, mapping,customerLotConfig,resultMap);
+				TreeMap<Integer, Integer> binSummary=rawdata.getbinSummary();
 				GenerateRawdata generateRawdata=new GenerateRawdata(rawdata);
 				File  vtestRawdata=generateRawdata.generate();
-				checkRawdata(vtestRawdata, resultMap,customerLot, mapping, customerLotConfig,times);
+				checkRawdata(vtestRawdata, resultMap,customerLot, mapping, customerLotConfig,times,binSummary);
 			}else {
-				
+				File seriousErrorMapping =new File("/SeriousEorrMapping/"+customerLot+"/"+mapping.getName());
+				if (!seriousErrorMapping.getParentFile().exists()) {
+					seriousErrorMapping.getParentFile().mkdirs();
+				}
+				FileUtils.copyFile(mapping, seriousErrorMapping);
 			}			
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -145,20 +156,20 @@ public class TskProberMapping2HGenerateRawdata {
 		}
 		
 	}
-	private void checkRawdata(File vtestRawdata,HashMap<String, String> resultMap,String customerLot,File mapping,HashMap<String, String> customerLotConfig,int times)
+	private void checkRawdata(File vtestRawdata,HashMap<String, String> resultMap,String customerLot,File mapping,HashMap<String, String> customerLotConfig,int times,TreeMap<Integer, Integer> binSummary)
 	{
 		try {
 			HashMap<String, String> log=new HashMap<>();
 			RawdataCheck rawdataCheck=new RawdataCheck();
 			boolean checkFLag=rawdataCheck.check(vtestRawdata, log);
-			
 			String customerCode=resultMap.get("customerCode");
 			String device=resultMap.get("device");
 			String lotNum=resultMap.get("lot");
 			String cp=resultMap.get("cp");
 			String waferId=resultMap.get("waferId");
+
 			if (checkFLag) {	
-				dealFile(vtestRawdata, customerCode, device, lotNum, cp, waferId);
+				dealFile(mapping,vtestRawdata, customerCode, device, lotNum, cp, waferId,binSummary);
 			}else {
 				Set<String> checkItems=log.keySet();
 				boolean errorDegree=false;
@@ -172,7 +183,7 @@ public class TskProberMapping2HGenerateRawdata {
 						FileUtils.forceDelete(vtestRawdata);
 						generateRawdata(customerLot, mapping, customerLotConfig, resultMap,times);						
 				}else {					
-					dealFile(vtestRawdata, customerCode, device, lotNum, cp, waferId,log);									
+					dealFile(mapping,vtestRawdata, customerCode, device, lotNum, cp, waferId,binSummary,log);									
 				}
 			}
 		} catch (Exception e) {
@@ -180,10 +191,45 @@ public class TskProberMapping2HGenerateRawdata {
 			e.printStackTrace();
 		}
 	}
-	private void dealFile(File vtestRawdata,String customerCode,String device,String lotNum,String cp,String waferId)
-	{
-		
+	private void dealFile(File mapping,File vtestRawdata,String customerCode,String device,String lotNum,String cp,String waferId,TreeMap<Integer, Integer> binSummary)
+	{	
 		try {
+			if (customerCode.equals("GCK")) {
+				File GCKBackDirectory=new File("/prod/AnomalyDatalog/GCK/MAP/"+lotNum);
+				if(!GCKBackDirectory.exists())
+					GCKBackDirectory.mkdirs();							
+				
+				File GCKBackupFile=new File("/prod/AnomalyDatalog/GCK/MAP/"+lotNum+"/"+mapping.getName());
+				if (GCKBackupFile.exists()) {
+					GCKBackupFile.delete();
+				}
+				FileUtils.copyFile(mapping, GCKBackupFile);
+			}
+			
+			File proberMappingBackUpDirectory=new File("/prod/mapbackup/"+customerCode+"/"+device+"/"+lotNum+"/"+cp);
+			if (!proberMappingBackUpDirectory.exists()) {
+				proberMappingBackUpDirectory.mkdir();
+			}
+			String mappingName=mapping.getName();
+			mappingName=mappingName+"_"+(new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()));
+			File proberMappingBackFile=new File("/prod/mapbackup/"+customerCode+"/"+device+"/"+lotNum+"/"+cp+"/"+mappingName);
+			FileUtils.copyFile(mapping, proberMappingBackFile);
+			
+			
+			boolean specialCustomer=false;
+			HashMap<String, ArrayList<String>> shieldMap=GetShieldDevice.get();
+			if (shieldMap.containsKey(customerCode)) {
+				if (shieldMap.get(customerCode).contains("ALL")) {
+					specialCustomer=true;
+				}else if(shieldMap.get(customerCode).contains(device)){
+					specialCustomer=true;
+				}
+			}
+			if (specialCustomer) {
+				FileUtils.forceDelete(vtestRawdata);
+				return;
+			}
+			
 			File resultDirectory=new File("/TestReport/RawData/"+customerCode+"/"+device+"/"+lotNum+"/"+cp);
 			if (!resultDirectory.exists()) {
 				resultDirectory.mkdirs();
@@ -192,7 +238,12 @@ public class TskProberMapping2HGenerateRawdata {
 			if (resultRawdataTemp.exists()) {
 				resultRawdataTemp.delete();
 			}
-			System.out.println(resultRawdataTemp.getPath());
+			HashMap<String, String> resultMap=new HashMap<>();
+			resultMap.put("lot", lotNum);
+			resultMap.put("waferId", waferId);
+			resultMap.put("cp", cp);			
+			WaferIdBinSummaryWrite write=new WaferIdBinSummaryWrite();
+			write.write(resultMap, binSummary);
 			FileUtils.copyFile(vtestRawdata, resultRawdataTemp);
 			FileUtils.forceDelete(vtestRawdata);
 		} catch (Exception e) {
@@ -200,10 +251,10 @@ public class TskProberMapping2HGenerateRawdata {
 			e.printStackTrace();
 		}
 	}
-	private void dealFile(File vtestRawdata,String customerCode,String device,String lotNum,String cp,String waferId,HashMap<String, String> log)
+	private void dealFile(File mapping,File vtestRawdata,String customerCode,String device,String lotNum,String cp,String waferId,TreeMap<Integer, Integer> binSummary,HashMap<String, String> log)
 	{
 		try {
-			dealFile(vtestRawdata, customerCode, device, lotNum, cp, waferId);
+			dealFile(mapping,vtestRawdata, customerCode, device, lotNum, cp, waferId,binSummary);
 			File waferIdLog=new File("/TestReport/CustReport/"+customerCode+"/"+device+"/"+lotNum+"/"+cp+"/"+waferId+"-error.log");
 			if (!waferIdLog.getParentFile().exists()) {
 				waferIdLog.getParentFile().mkdirs();

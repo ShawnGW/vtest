@@ -38,7 +38,7 @@ public class InitTskBean implements Rawdata{
 		String waferid=tskMappingResult.get("Wafer ID");
 		waferid=SlotModify.modify(customerLotConfig, waferid);
 		String innerlot=GetInnerLot.get(waferid);	
-		
+
 		//init properties by mes config
 		String cp=tskMappingResult.get("CP Process");
 		HashMap<String, String> resultMap=getMesInformations.getInfor(new GetLotConfigFromMes(innerlot), GetMesInformations.TYPE_CONFIG);
@@ -50,7 +50,7 @@ public class InitTskBean implements Rawdata{
 				config=config.substring(0, config.length()-1);
 				for (String propertie : configSet) {
 					if (propertie.contains(config)) {
-						if (resultMap.get(config).contains(cp+"T0")) {
+						if (resultMap.get(config).contains(cp+"T0")) {							
 							String[] content=resultMap.get(config).split(":");
 							properties.put(configMap.get(config+"*"), content.length>1?content[1]:content[0]);
 						}

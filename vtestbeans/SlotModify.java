@@ -53,6 +53,10 @@ public class SlotModify {
 				}
 				value=modifyValue(sequnce, tokens[1]);
 			}
+			
+			if ((partLot+"-"+value).equals("null-null")) {
+				return  waferid;
+			}
 			waferid=partLot+"-"+value;
 			return waferid;
 		}else{
