@@ -240,9 +240,9 @@ public class TskProberMappingParse {
 								/** **/
 								if (testDieFlag) {
 									 testDieMinX=CellX;
-									 testDieMinY=CellX;
+									 testDieMinY=CellY;
 									 testDieMaxX=CellX;
-									 testDieMaxY=CellX;
+									 testDieMaxY=CellY;
 									 testDieFlag=false;
 								}
 								if (testDieMinX>CellX){
