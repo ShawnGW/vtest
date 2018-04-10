@@ -205,13 +205,17 @@ public class TskProberMapping3KGenerateRawdata {
 				}
 				FileUtils.copyFile(mapping, GCKBackupFile);
 			}
+			File waferIdLog=new File("/TestReport/CustReport/"+customerCode+"/"+device+"/"+lotNum+"/"+cp+"/"+waferId+"-error.log");
+			if (waferIdLog.exists()) {
+				waferIdLog.delete();
+			}
 			
 			File proberMappingBackUpDirectory=new File("/prod/mapbackup/"+customerCode+"/"+device+"/"+lotNum+"/"+cp);
 			if (!proberMappingBackUpDirectory.exists()) {
 				proberMappingBackUpDirectory.mkdir();
 			}
 			String mappingName=mapping.getName();
-			mappingName=mappingName+"_"+(new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()));
+			mappingName=mappingName+"_"+(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 			File proberMappingBackFile=new File("/prod/mapbackup/"+customerCode+"/"+device+"/"+lotNum+"/"+cp+"/"+mappingName);
 			FileUtils.copyFile(mapping, proberMappingBackFile);
 			

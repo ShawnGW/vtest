@@ -22,7 +22,7 @@ public class TskProberMappingParse {
 			HashMap<String, String> skipAndMarkDieMap=new HashMap<>();
 			HashMap<String, String> DieMap=new HashMap<>();
 			TskProberMappingParse tskProberMappingParse=new TskProberMappingParse();
-			HashMap<String, String> resultMap=tskProberMappingParse.Get(new File("D:/BFSCSV/001.HV7GVPG"),0,Bin_summary_Map,DieMap,skipAndMarkDieMap);
+			HashMap<String, String> resultMap=tskProberMappingParse.Get(new File("D:/prod/prober/TSK/UF200/GXV41044/001.GXV41044-01-H0"),0,Bin_summary_Map,DieMap,skipAndMarkDieMap);
 			Set<String> keyset=new TreeSet<>(resultMap.keySet());
 			for (String key : keyset) {
 				System.out.println(key+" : "+resultMap.get(key));
@@ -240,9 +240,9 @@ public class TskProberMappingParse {
 								/** **/
 								if (testDieFlag) {
 									 testDieMinX=CellX;
-									 testDieMinY=CellX;
+									 testDieMinY=CellY;
 									 testDieMaxX=CellX;
-									 testDieMaxY=CellX;
+									 testDieMaxY=CellY;
 									 testDieFlag=false;
 								}
 								if (testDieMinX>CellX){

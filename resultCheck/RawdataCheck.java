@@ -19,7 +19,7 @@ public class RawdataCheck {
 	public static void main(String[] args) throws IOException {
 		RawdataCheck rawdataCheck=new RawdataCheck();
 		HashMap<String, String> log=new HashMap<>();	
-		System.out.println(rawdataCheck.check(new File("D:/BFSCSV/PHFXLDARFHDFADH.raw"), log));;
+		System.out.println(rawdataCheck.check(new File("D:/TempRawdata/FXQVPIWSKOXRHUF.raw"), log));;
 		Set<String> logset=log.keySet();
 		for (String string : logset) {
 			System.out.println(string+" : "+log.get(string));
@@ -127,7 +127,8 @@ public class RawdataCheck {
 	{
 		log.put("Type properties", "properties check");
 		Set<String> checkSet=checkedProperties.keySet();
-		for (String checkItem : checkSet) {		
+		for (String checkItem : checkSet) {	
+			String finItem=checkItem;
 			String propertiesValue=checkedProperties.get(checkItem);
 			if (propertiesValue.equals("NA")) {
 				if (checkItem.contains("@")) {
@@ -141,7 +142,7 @@ public class RawdataCheck {
 						if (properties.containsKey(checkItem)) {
 							String value=properties.get(checkItem);
 							if (!value.equals("NA")) {
-								checkedProperties.put(checkItem, value);
+								checkedProperties.put(finItem, value);
 							}
 							else {
 								log.put("Properties value", "miss propertie:"+checkItem);
@@ -245,9 +246,6 @@ public class RawdataCheck {
 		}
 		Set<Integer> actualSet=actualSummaryMap.keySet();
 		for (Integer bin : actualSet) {
-//			System.out.println("Bin: "+bin);
-//			System.out.println("Bin:"+bin+"  "+actualSummaryMap.get(bin));
-//			System.out.println("Bin:"+bin+"  "+theroySummaryMap.get(bin));
 			if (!theroySummaryMap.containsKey(bin)) {
 				log.put("Bin value", "actual contains bin:"+bin+" but Bin Summary not contains!");
 				return false;

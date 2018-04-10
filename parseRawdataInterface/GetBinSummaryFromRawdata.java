@@ -1,7 +1,7 @@
 package parseRawdataInterface;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public interface GetBinSummaryFromRawdata {
-	abstract HashMap<Integer, Integer> getBinSummary();
+	abstract TreeMap<Integer, Integer> getBinSummary();
 }
